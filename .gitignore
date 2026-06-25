@@ -1,0 +1,106 @@
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio cache/options
+.vs/
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+packages/
+!packages/build/
+*.snupkg
+
+# NuGet Packages Cache
+*.nuget.props
+*.nuget.targets
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# ASP.NET Core
+appsettings.Development.json
+
+# Publish output
+publish/
+wwwroot/dist/
+wwwroot/lib/
+
+# IIS Express
+iisexpress/
+*.vspscc
+*.vssscc
+.applicationhost.config
+
+# Test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# DotCover
+*.dotCover
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Azure
+PublishProfiles/
+
+# Entity Framework migrations bundle
+bundle/
+
+# Node.js (if React/Angular frontend exists)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.*
+
+# Secrets
+secrets.json
+
+# Generated files
+Generated/

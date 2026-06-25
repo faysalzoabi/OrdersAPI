@@ -1,0 +1,21 @@
+GET http://localhost:5101/api/orders
+
+###
+POST http://localhost:5101/api/orders
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    },
+    {
+      "productId": 2,
+      "quantity": 3
+    }
+  ]
+}
+
+###
+GET http://localhost:5101/api/orders/1
