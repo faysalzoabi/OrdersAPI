@@ -1,6 +1,7 @@
 using System.Xml;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using OrderApi.Data;
 using OrderApi.Models;
 using OrderApi.Models.Domain;
 using OrderApi.Models.Request;
@@ -10,24 +11,19 @@ namespace OrderApi.Services
 {
   public class OrderService : IOrderService
   {
-    private static List<Order> _orders = new List<Order>();
-    private static List<Product> _products = new List<Product>
-    {
-      new Product {Id= 1, Name="Laptop", Price= 500},
-      new Product {Id= 2, Name="Mouse", Price= 100},
-      new Product {Id= 3, Name="Keyboard", Price= 300},
-    };
-
+    private readonly AppDbContext _context;
     private readonly IMapper _mapper;
 
-    public OrderService(IMapper mapper)
+    public OrderService(IMapper mapper, AppDbContext context)
     {
       _mapper = mapper;
+      _context = context;
     }
 
     public List<Order> GetOrders()
     {
-      return _orders;
+      var orders = _context.orders.ToList();
+      return orders;
     }
 
     public Order? GetOrder(int id)
@@ -36,7 +32,7 @@ namespace OrderApi.Services
       {
         throw new ArgumentException("Invalid order id");
       }
-      var order = _orders.FirstOrDefault(item => item.Id == id);
+      var order = _context.orders.FirstOrDefault(item => item.Id == id);
 
       return order;
     }
@@ -61,7 +57,7 @@ namespace OrderApi.Services
           throw new ArgumentException("Quantity must be greater than 0");
         }
 
-        var product = _products.FirstOrDefault(i => i.Id == item.ProductId);
+        var product = _context.Products.FirstOrDefault(i => i.Id == item.ProductId);
 
         if (product is null)
         {
@@ -75,12 +71,12 @@ namespace OrderApi.Services
 
       var order = new Order
       {
-        Id = _orders.Count + 1,
         Items = orderItems,
         TotalPrice = totalPrice
       };
 
-      _orders.Add(order);
+      _context.orders.Add(order);
+      _context.SaveChanges();
 
       return order;
     }

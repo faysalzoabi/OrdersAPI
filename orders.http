@@ -12,10 +12,13 @@ Content-Type: application/json
     },
     {
       "productId": 2,
-      "quantity": 3
+      "quantity": 2
     }
   ]
 }
 
 ###
 GET http://localhost:5101/api/orders/1
+
+###
+GET http://localhost:5101/api/products

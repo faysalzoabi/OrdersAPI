@@ -7,6 +7,9 @@ using OrderApi.Services.Contracts;
 using OrderApi.Services;
 using OrderApi.Models.Request;
 using OrderApi.Mappings;
+using Microsoft.EntityFrameworkCore;
+using OrderApi.Data;
+using OrderApi.Models.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequest>();
 builder.Services.AddAutoMapper(config =>
 {
     config.AddProfile<OrderMappingProfile>();
+    config.AddProfile<ProductMappingProfile>();
 });
 
 //Swagger/OpenAPI
@@ -35,6 +39,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddCors(options =>
 {
@@ -44,9 +49,25 @@ builder.Services.AddCors(options =>
     });
 });
 
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
+
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     context.Database.EnsureCreated();
+//     if (context.Products.Any() == false)
+//     {
+//         context.Products.AddRange(
+//             new Product { Name = "Laptop", Price = 50000 },
+//             new Product { Name = "Mouse", Price = 50000 },
+//             new Product { Name = "Keyboard", Price = 50000 }
+//         );
+//         context.SaveChanges();
+//     }
+// }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
