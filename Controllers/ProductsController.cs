@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderApi.Models.Response;
 using OrderApi.Services.Contracts;
@@ -9,6 +10,7 @@ namespace OrderApi.Controllers
 
   [Route("api/[controller]")]
   [ApiController]
+  [Authorize]
   public class ProductsController : ControllerBase
   {
     private readonly IProductService _productService;
