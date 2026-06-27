@@ -21,9 +21,9 @@ namespace OrderApi.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetProducts()
+    public IActionResult GetProducts([FromQuery] GetProductsQuery query)
     {
-      var products = _productService.GetProducts();
+      var products = _productService.GetProducts(query);
       var response = _mapper.Map<List<ProductResponse>>(products);
 
       var finalResponse = new ApiResponse<List<ProductResponse>>

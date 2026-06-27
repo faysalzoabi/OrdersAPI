@@ -24,9 +24,32 @@ namespace OrderApi.Services
       return product;
     }
 
-    public List<Product> GetProducts()
+    public List<Product> GetProducts(GetProductsQuery query)
     {
-      return _context.Products.ToList();
+      IQueryable<Product> productQuery = _context.Products;
+
+      if (query.MinPrice.HasValue)
+      {
+        productQuery = productQuery.Where(product => product.Price >= query.MinPrice);
+      }
+
+      if (!string.IsNullOrWhiteSpace(query.SortBy))
+      {
+        switch (query.SortBy?.ToLowerInvariant())
+        {
+          case "price_asc":
+            productQuery = productQuery.OrderBy(product => product.Price);
+            break;
+          case "price_desc":
+            productQuery = productQuery.OrderByDescending(product => product.Price);
+            break;
+        }
+      }
+
+      return productQuery
+                  .Skip((query.Page - 1) * query.PageSize)
+                  .Take(query.PageSize)
+                  .ToList();
     }
   }
 }

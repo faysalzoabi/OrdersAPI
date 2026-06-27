@@ -22,3 +22,6 @@ GET http://localhost:5101/api/orders/1
 
 ###
 GET http://localhost:5101/api/products
+
+###
+GET http://localhost:5101/api/products?page=2

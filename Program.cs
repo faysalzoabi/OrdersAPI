@@ -10,6 +10,7 @@ using OrderApi.Mappings;
 using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Models.Domain;
+using OrderApi.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddControllers(options =>
 // register FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequest>();
+builder.Services.AddValidatorsFromAssemblyContaining<GetProductsQueryValidator>();
 
 
 //AutoMappers
