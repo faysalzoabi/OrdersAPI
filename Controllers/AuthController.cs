@@ -3,6 +3,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -17,8 +18,17 @@ namespace OrderApi.Controllers
 
     public IActionResult Login(LoginRequestDto request)
     {
+      string? role = null;
       //check for valid user using hardcoded credentials
-      if (request.Username != "admin" || request.Password != "password")
+      if (request.Username == "admin" && request.Password == "password")
+      {
+        role = "Admin";
+      }
+      else if (request.Username == "user" && request.Password != "password")
+      {
+        role = "User";
+      }
+      else
       {
         return Unauthorized();
       }
@@ -27,7 +37,7 @@ namespace OrderApi.Controllers
       var claims = new[]
       {
         new Claim(ClaimTypes.Name, request.Username),
-        new Claim(ClaimTypes.Role, "Admin")
+        new Claim(ClaimTypes.Role, role)
       };
 
       // generate token

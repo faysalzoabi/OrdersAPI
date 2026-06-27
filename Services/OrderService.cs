@@ -1,6 +1,7 @@
 using System.Xml;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Models;
 using OrderApi.Models.Domain;
@@ -20,24 +21,24 @@ namespace OrderApi.Services
       _context = context;
     }
 
-    public List<Order> GetOrders()
+    public Task<List<Order>> GetOrders()
     {
-      var orders = _context.orders.ToList();
+      var orders = _context.orders.Include(o => o.Items).ToListAsync();
       return orders;
     }
 
-    public Order? GetOrder(int id)
+    public Task<Order?> GetOrder(int id)
     {
       if (id < 0)
       {
-        throw new ArgumentException("Invalid order id");
+        throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than zero.");
       }
-      var order = _context.orders.FirstOrDefault(item => item.Id == id);
+      var order = _context.orders.Include(o => o.Items).FirstOrDefaultAsync(item => item.Id == id);
 
       return order;
     }
 
-    public Order CreateOrder(CreateOrderRequest request)
+    public async Task<Order> CreateOrder(CreateOrderRequest request)
     {
       if (request.Items.Count > 10)
       {
@@ -49,6 +50,12 @@ namespace OrderApi.Services
       decimal totalPrice = 0;
 
       var orderItems = new List<OrderItem>();
+      var productIds = request.Items.Select(i => i.ProductId).ToList();
+      var products = await _context.Products
+                          .Where(p => productIds.Contains(p.Id))
+                          .ToListAsync();
+
+      var productMap = products.ToDictionary(p => p.Id);
 
       foreach (var item in request.Items)
       {
@@ -57,9 +64,7 @@ namespace OrderApi.Services
           throw new ArgumentException("Quantity must be greater than 0");
         }
 
-        var product = _context.Products.FirstOrDefault(i => i.Id == item.ProductId);
-
-        if (product is null)
+        if (!productMap.TryGetValue(item.ProductId, out var product))
         {
           throw new ArgumentException($"Invalid product id {item.ProductId}");
         }
@@ -76,7 +81,7 @@ namespace OrderApi.Services
       };
 
       _context.orders.Add(order);
-      _context.SaveChanges();
+      await _context.SaveChangesAsync();
 
       return order;
     }

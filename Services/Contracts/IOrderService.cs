@@ -6,9 +6,9 @@ namespace OrderApi.Services.Contracts
 {
   public interface IOrderService
   {
-    public List<Order> GetOrders();
-    public Order? GetOrder(int id);
-    public Order CreateOrder(CreateOrderRequest request);
+    public Task<List<Order>> GetOrders();
+    public Task<Order?> GetOrder(int id);
+    public Task<Order> CreateOrder(CreateOrderRequest request);
   }
 
 }

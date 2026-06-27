@@ -1,5 +1,6 @@
 
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OrderApi.Models;
 using OrderApi.Models.Request;
@@ -11,6 +12,7 @@ namespace OrderApi.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
+  [Authorize(Roles = "Admin")]
   public class OrdersController : ControllerBase
   {
     private readonly IOrderService _orderService;
@@ -22,9 +24,9 @@ namespace OrderApi.Controllers
       _mapper = mapper;
     }
     [HttpGet]
-    public IActionResult GetOrders()
+    public async Task<IActionResult> GetOrders()
     {
-      var orders = _orderService.GetOrders();
+      var orders = await _orderService.GetOrders();
 
       var response = _mapper.Map<List<OrderResponse>>(orders);
 
@@ -38,11 +40,11 @@ namespace OrderApi.Controllers
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetOrder([FromRoute] int id)
+    public async Task<IActionResult> GetOrder([FromRoute] int id)
     {
       try
       {
-        var order = _orderService.GetOrder(id);
+        var order = await _orderService.GetOrder(id);
 
         var response = _mapper.Map<OrderResponse>(order);
 
@@ -59,7 +61,7 @@ namespace OrderApi.Controllers
 
         return Ok(finalResponse);
       }
-      catch (ArgumentException ex)
+      catch (ArgumentOutOfRangeException ex)
       {
         return BadRequest(ex.Message);
       }
@@ -67,11 +69,11 @@ namespace OrderApi.Controllers
     }
 
     [HttpPost]
-    public IActionResult CreateOrder([FromBody] CreateOrderRequest request)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
     {
       try
       {
-        var order = _orderService.CreateOrder(request);
+        var order = await _orderService.CreateOrder(request);
 
         var response = _mapper.Map<OrderResponse>(order);
 
